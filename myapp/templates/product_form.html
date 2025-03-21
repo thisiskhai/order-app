@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name|default:"Thêm mới sản phẩm" }}{% endblock %}
+
+{% block content %}
+<div class="card mt-4">
+    <div class="card-body">
+        <h4 class="card-title">
+            {% if product %}
+                ✏️ Sửa sản phẩm: {{ product.name }}
+            {% else %}
+                ➕ Thêm mới sản phẩm
+            {% endif %}
+        </h4>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.as_p }}
+            </div>
+
+            <button class="btn btn-success" type="submit">
+                {% if product %} Cập nhật {% else %} Thêm mới {% endif %}
+            </button>
+            <a href="{% url 'all_products' %}" class="btn btn-secondary ms-2">Hủy bỏ</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

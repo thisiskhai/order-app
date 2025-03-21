@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📌 Dashboard Admin</h2>
+
+<a class="btn btn-primary mb-3" href="{% url 'manage_products' %}">Quản lý sản phẩm</a>
+
+<!-- Danh sách nhân viên -->
+<h4>Danh sách nhân viên</h4>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Tên nhân viên</th>
+            <th>Tổng số lượng đặt hàng</th>
+            <th>Xem chi tiết</th>
+            <th>Xoá nhân viên</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in staff_orders %}
+        <tr>
+            <td>{{ item.staff.username }}</td>
+            <td>{{ item.total_quantity }}</td>
+            <td>
+                <a class="btn btn-info btn-sm" href="{% url 'staff_order_detail' item.staff.id %}">Chi tiết</a>
+            </td>
+            <td>
+                <form method="post" action="{% url 'delete_staff' item.staff.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xoá</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Chưa có nhân viên nào.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2 class="mb-4">📌 Dashboard Admin</h2>
+
+<a class="btn btn-primary mb-3" href="{% url 'manage_products' %}">Quản lý sản phẩm</a>
+<a class="btn btn-info mb-3" href="{% url 'all_products' %}">Xem tất cả sản phẩm</a>
+
+
+<!-- Form thêm nhân viên -->
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Thêm Nhân Viên Mới</h5>
+        <form method="post">
+            {% csrf_token %}
+            {{ staff_form.as_p }}
+            <button class="btn btn-success" type="submit" name="add_staff">Thêm nhân viên</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

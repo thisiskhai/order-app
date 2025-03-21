@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập nhân viên{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+
+        <div class="card shadow-sm mt-5">
+            <div class="card-body">
+                <h4 class="card-title text-center mb-4">🔑 Đăng nhập nhân viên</h4>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" name="username" class="form-control" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

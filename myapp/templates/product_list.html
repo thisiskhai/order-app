@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Trang Quản lý Sản phẩm{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📋 Quản lý sản phẩm</h2>
+
+<p class="mb-3">
+    Xin chào, <strong>{{ request.user.username }}</strong>!
+    <a href="{% url 'staff_logout' %}" class="btn btn-sm btn-outline-secondary ms-2">Đăng xuất</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Mô tả</th>
+            <th>Giá</th>
+            <th class="text-center">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.price }}</td>
+            <td class="text-center">
+                <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-warning">✏️ Sửa</a>
+                <a href="{% url 'product_delete' product.pk %}"
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?');">
+                    ❌ Xóa
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">Chưa có sản phẩm nào được thêm.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

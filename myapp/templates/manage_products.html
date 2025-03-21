@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý sản phẩm{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📦 Quản lý sản phẩm</h2>
+
+<a class="btn btn-secondary mb-3" href="{% url 'admin_dashboard' %}">← Quay lại Dashboard</a>
+
+<!-- Form thêm sản phẩm -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Thêm sản phẩm mới</h5>
+        <form method="post">
+            {% csrf_token %}
+            {{ product_form.as_p }}
+            <button class="btn btn-primary" type="submit" name="add_product">Thêm sản phẩm</button>
+        </form>
+    </div>
+</div>
+
+<!-- Form import sản phẩm Excel -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Import từ file Excel</h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ import_form.as_p }}
+            <button class="btn btn-success" type="submit" name="import_excel">Import Excel</button>
+        </form>
+    </div>
+</div>
+
+<!-- Danh sách sản phẩm -->
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Có sẵn ở cửa hàng</th>
+            <th>Số lượng</th>
+            <th>Đơn vị</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.available_at_store|yesno:"✔,✖" }}</td>
+            <td>{{ product.order_quantity }}</td>
+            <td>{{ product.get_unit_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Chưa có sản phẩm nào.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
