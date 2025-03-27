@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Đăng nhập nhân viên{% endblock %}
+{% block title %}Staff Login{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,11 +8,11 @@
 
         <div class="card shadow-sm mt-5">
             <div class="card-body">
-                <h4 class="card-title text-center mb-4">🔑 Đăng nhập nhân viên</h4>
+                <h4 class="card-title text-center mb-4">🔑 Staff Login</h4>
 
                 {% if form.errors %}
                     <div class="alert alert-danger">
-                        Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.
+                        Invalid username or password. Please try again.
                     </div>
                 {% endif %}
 
@@ -20,16 +20,16 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label class="form-label">Tên đăng nhập</label>
+                        <label class="form-label">Username</label>
                         <input type="text" name="username" class="form-control" required autofocus>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Mật khẩu</label>
+                        <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
             </div>
         </div>

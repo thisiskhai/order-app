@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ product.name|default:"Thêm mới sản phẩm" }}{% endblock %}
+{% block title %}{{ product.name|default:"Add New Product" }}{% endblock %}
 
 {% block content %}
 <div class="card mt-4">
     <div class="card-body">
         <h4 class="card-title">
             {% if product %}
-                ✏️ Sửa sản phẩm: {{ product.name }}
+                ✏️ Edit Product: {{ product.name }}
             {% else %}
-                ➕ Thêm mới sản phẩm
+                ➕ Add New Product
             {% endif %}
         </h4>
 
@@ -20,9 +20,9 @@
             </div>
 
             <button class="btn btn-success" type="submit">
-                {% if product %} Cập nhật {% else %} Thêm mới {% endif %}
+                {% if product %} Update {% else %} Add {% endif %}
             </button>
-            <a href="{% url 'all_products' %}" class="btn btn-secondary ms-2">Hủy bỏ</a>
+            <a href="{% url 'all_products' %}" class="btn btn-secondary ms-2">Cancel</a>
         </form>
     </div>
 </div>

@@ -28,6 +28,19 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+LANGUAGE_CODE = 'vi'  # mặc định là Tiếng Việt
+
+USE_I18N = True
+USE_L10N = True
+
+LANGUAGES = [
+    ('vi', 'Tiếng Việt'),
+    ('en', 'English'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # thêm vào đây
+
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -107,6 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+USE_I18N = True
 
 TIME_ZONE = 'UTC'
 
@@ -129,3 +145,6 @@ LOGIN_URL = '/staff/login/'
 
 CSRF_COOKIE_SECURE = False  # Để đảm bảo CSRF cookie hoạt động trên localhost
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8800']  # Thêm localhost vào danh sách tin cậy
+
+SESSION_COOKIE_AGE = 4 * 60 * 60  # 4 giờ, tính bằng giây
+SESSION_SAVE_EVERY_REQUEST = True  # Reset thời gian mỗi khi user tương tác với trang

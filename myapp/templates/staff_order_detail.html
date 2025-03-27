@@ -1,39 +1,53 @@
 {% extends "base.html" %}
-
-{% block title %}Chi tiết đơn hàng - {{ staff.username }}{% endblock %}
+{% load custom_filters %}
+{% block title %}Orders of {{ staff.username }}{% endblock %}
 
 {% block content %}
-<a class="btn btn-secondary mb-3" href="{% url 'admin_dashboard' %}">← Quay về Dashboard</a>
+<h2>📦 Orders by: <strong>{{ staff.username }}</strong></h2>
+<p>
+    <a class="btn btn-secondary mb-4" href="{% url 'admin_dashboard' %}">
+        ← Back to Dashboard
+    </a>
+</p>
 
-<h3 class="mb-4">📋 Chi tiết đơn hàng của nhân viên: <strong>{{ staff.username }}</strong></h3>
-
-<div class="alert alert-info">
-    <strong>Tổng số lượng đã đặt:</strong> {{ total_quantity }}
-</div>
-
-{% if entries %}
-    <table class="table table-striped table-bordered">
+{% if grouped_orders %}
+    <table class="table table-bordered table-hover">
         <thead class="table-dark">
             <tr>
-                <th>Ngày đặt hàng</th>
-                <th>Tên sản phẩm</th>
-                <th>Số lượng</th>
+                <th>🕒 Submitted At</th>
+                <th>🔢 Number of Products</th>
+                <th>📦 Total Quantity</th>
+                <th>👁️ Status</th>
+                <th>📋 View Details</th>
             </tr>
         </thead>
         <tbody>
-            {% for entry in entries %}
+            {% for group in grouped_orders %}
             <tr>
-                <td>{{ entry.created_at|date:"d/m/Y H:i" }}</td>
-                <td>{{ entry.product.name }}</td>
-                <td>{{ entry.order_quantity }}</td>
+                <td>{{ group.timestamp|date:"d/m/Y H:i" }}</td>
+                <td>{{ group.entries|length }}</td>
+                <td>
+                    {% with total=group.entries|sum_attr:"order_quantity" %}
+                        {{ total }}
+                    {% endwith %}
+                </td>
+                <td>
+                    {% if group.entries.0.is_seen %}
+                        <span class="badge bg-success">✅ Seen</span>
+                    {% else %}
+                        <span class="badge bg-secondary">❌ Unseen</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'admin_batch_detail' staff.id group.timestamp|date:'YmdHi' %}" class="btn btn-sm btn-primary">
+                        Details
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 {% else %}
-    <div class="alert alert-warning">
-        <em>Chưa có đơn đặt hàng nào.</em>
-    </div>
+    <div class="alert alert-info">No orders available.</div>
 {% endif %}
-
 {% endblock %}

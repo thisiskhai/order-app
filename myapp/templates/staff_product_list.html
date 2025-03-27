@@ -1,67 +1,95 @@
 {% extends "base.html" %}
 {% load custom_filters %}
-
-{% block title %}Nhập số lượng đặt hàng{% endblock %}
+{% block title %}Enter Order Quantities{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>📝 Nhập số lượng đặt hàng</h3>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>📝 Enter Order Quantities</h3>
     <div>
-        Xin chào, <strong>{{ request.user.username }}</strong> |
-        <a href="{% url 'staff_logout' %}" class="btn btn-sm btn-outline-danger">Đăng xuất</a>
+      Hello, <strong>{{ request.user.username }}</strong> |
+      <a href="{% url 'staff_logout' %}" class="btn btn-sm btn-outline-danger">Logout</a>
     </div>
-</div>
+  </div>
 
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
 
-<form method="post">
+  <form method="post">
     {% csrf_token %}
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>Tên sản phẩm</th>
-                <th style="width: 200px;">Nhập số lượng</th>
-                <th style="width: 150px;">Số lượng đã đặt</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-                <td>{{ product.name }}</td>
-                <td>
-                    {% with order=staff_orders|get_item:product.id %}
-                        <input type="number" 
-                               class="form-control" 
-                               name="quantity_{{ product.id }}" 
-                               min="0" 
-                               value="{% if order %}{{ order.order_quantity }}{% else %}0{% endif %}">
-                    {% endwith %}
-                </td>
-                <td class="text-center">
-                    {% with order=staff_orders|get_item:product.id %}
-                        {% if order %}
-                            <span class="badge bg-success">{{ order.order_quantity }}</span>
-                        {% else %}
-                            <span class="badge bg-secondary">Chưa đặt</span>
-                        {% endif %}
-                    {% endwith %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="text-center">Chưa có sản phẩm nào.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Product Name</th>
+          <th style="width: 200px">Enter Quantity</th>
+          <th style="width: 150px">Previously Ordered</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>
+            <input
+              type="number"
+              class="form-control"
+              name="quantity_{{ product.id }}"
+              min="0"
+              value="{% if confirm_required %}{{ current_quantities|get_item:product.id }}{% else %}{{ staff_orders|get_item:product.id|default:'0' }}{% endif %}"
+            />
+          </td>
+          <td class="text-center">
+            {% with order=staff_orders|get_item:product.id %}
+              {% if order %}
+                <span class="badge bg-success fs-6">{{ order }}</span>
+              {% else %}
+                <span class="badge bg-secondary">Not Ordered</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="text-center">No products available.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
-    <button type="submit" class="btn btn-success">✅ Cập nhật đơn hàng</button>
-</form>
+    {% if confirm_required %}
+      <div class="alert alert-warning">
+        ⚠️ The quantities are unchanged from the previous order. Are you sure you want to resubmit?
+      </div>
+      <button type="submit" name="confirm_submit" class="btn btn-danger">
+        ⚠️ Confirm Resubmission
+      </button>
+      <a href="{% url 'staff_product_list' %}" class="btn btn-secondary">Cancel</a>
+    {% else %}
+      <button type="submit" class="btn btn-success">✅ Submit Order</button>
+      <a
+        href="{% url 'staff_order_history' %}"
+        class="btn btn-outline-primary float-end mb-2"
+      >
+        🕒 View Order History
+      </a>
+    {% endif %}
+  </form>
+</div>
 
+<!-- Auto-hide alert after 5s -->
+<script>
+  setTimeout(function () {
+    document.querySelectorAll(".alert").forEach(function (alert) {
+      alert.classList.remove("show");
+      alert.classList.add("fade");
+    });
+  }, 800);
+</script>
 {% endblock %}

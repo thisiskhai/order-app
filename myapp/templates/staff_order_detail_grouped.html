@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Orders of {{ staff.username }}{% endblock %}
+{% block content %}
+
+<h2>🧾 Orders by: {{ staff.username }}</h2>
+<a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">← Back to Dashboard</a>
+
+{% if grouped_orders %}
+  {% for timestamp, orders in grouped_orders.items %}
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        🕒 Submitted at: {{ timestamp }}
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in orders %}
+            <tr>
+              <td>{{ entry.product.name }}</td>
+              <td>{{ entry.order_quantity }}</td>
+              <td>
+                {% if entry.is_processed %}
+                  <span class="badge bg-success">✅ Processed</span>
+                {% else %}
+                  <span class="badge bg-secondary">❌ Not Processed</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="text-muted">No orders available.</p>
+{% endif %}
+
+{% endblock %}

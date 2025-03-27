@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+<h3>Recent Order History</h3>
+<a href="{% url 'staff_product_list' %}" class="btn btn-secondary mb-3">← Back to Order Page</a>
+
+{% if orders_by_time %}
+  {% for group in orders_by_time %}
+    <h5 class="mt-4">🕒 {{ group.timestamp|date:"d/m/Y H:i" }}</h5>
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>Product Name</th>
+          <th>Ordered Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>
+            {% with entry=group.entries|dict_key:product.id %}
+              {% if entry %}
+                <span class="badge bg-success">{{ entry.order_quantity }}</span>
+              {% else %}
+                <span class="text-muted">–</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endfor %}
+{% else %}
+  <p class="text-muted">You haven't placed any orders yet.</p>
+{% endif %}
+{% endblock %}
