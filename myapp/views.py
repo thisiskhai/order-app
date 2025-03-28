@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta, datetime
 from django.utils.timezone import now
 from django.utils.dateparse import parse_datetime
@@ -11,7 +12,7 @@ from django.contrib import messages
 import openpyxl
 
 from .forms import ProductAdminForm, StaffCreateForm, ProductImportForm
-from .models import Product, OrderEntry
+from .models import Category, Product, OrderEntry
 
 # ==========================
 # ✅ User Permission Checks
@@ -366,3 +367,17 @@ def delete_staff(request, staff_id):
 # ==========================
 def cleanup_old_orders():
     OrderEntry.objects.filter(is_processed=True, created_at__lt=now() - timedelta(weeks=4)).delete()
+
+
+@login_required
+@user_passes_test(is_admin)
+def all_products(request):
+    categories = Category.objects.all()
+    grouped_products = {
+        category.name: Product.objects.filter(category=category).order_by('-created_at')
+        for category in categories
+    }
+
+    return render(request, 'all_products.html', {
+        'grouped_products': grouped_products
+    })

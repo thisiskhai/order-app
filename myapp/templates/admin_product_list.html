@@ -3,48 +3,47 @@
 {% block title %}Product List{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">📋 Product List</h2>
+<h2 class="mb-4">Product List</h2>
 
 <table class="table table-striped table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Product Name</th>
-            <th>Available at Store</th>
-            <th>Unit</th>
-            {% if request.user.is_superuser %}
-                <th class="text-center">Actions</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        <tr>
-            <td>{{ product.name }}</td>
-            <td>
-                {% if product.available_at_store %}
-                    <span class="badge bg-success">✔️ Yes</span>
-                {% else %}
-                    <span class="badge bg-danger">✖️ No</span>
-                {% endif %}
-            </td>
-            <td>{{ product.get_unit_display }}</td>
-            {% if request.user.is_superuser %}
-                <td class="text-center">
-                    <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-warning">✏️ Edit</a>
-                    <a href="{% url 'product_delete' product.pk %}" 
-                        class="btn btn-sm btn-danger"
-                        onclick="return confirm('Are you sure you want to delete this product?');">
-                        ❌ Delete
-                    </a>
-                </td>
-            {% endif %}
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4" class="text-center">There are currently no products.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+  <thead class="table-dark">
+    <tr>
+      <th>Product Name</th>
+      <th>Available at Store</th>
+      <th>Unit</th>
+      {% if request.user.is_superuser %}
+      <th class="text-center">Actions</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ product.name }}</td>
+      <td>
+        {% if product.available_at_store %}
+        <span class="badge bg-success">Yes</span>
+        {% else %}
+        <span class="badge bg-danger">No</span>
+        {% endif %}
+      </td>
+      <td>{{ product.get_unit_display }}</td>
+      {% if request.user.is_superuser %}
+      <td class="text-center">
+        <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-warning me-1">Edit</a>
+        <a href="{% url 'product_delete' product.pk %}"
+           class="btn btn-sm btn-outline-danger"
+           onclick="return confirm('Are you sure you want to delete this product?');">
+          Delete
+        </a>
+      </td>
+      {% endif %}
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4" class="text-center text-muted">There are currently no products.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
-
 {% endblock %}

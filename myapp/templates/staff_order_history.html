@@ -4,38 +4,56 @@
 {% block title %}Order History{% endblock %}
 
 {% block content %}
-<h3>Recent Order History</h3>
+<h3 class="mb-4">🧾 Recent Order History</h3>
 <a href="{% url 'staff_product_list' %}" class="btn btn-secondary mb-3">← Back to Order Page</a>
 
 {% if orders_by_time %}
   {% for group in orders_by_time %}
-    <h5 class="mt-4">🕒 {{ group.timestamp|date:"d/m/Y H:i" }}</h5>
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Product Name</th>
-          <th>Ordered Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-        <tr>
-          <td>{{ product.name }}</td>
-          <td>
-            {% with entry=group.entries|dict_key:product.id %}
-              {% if entry %}
-                <span class="badge bg-success">{{ entry.order_quantity }}</span>
-              {% else %}
-                <span class="text-muted">–</span>
-              {% endif %}
-            {% endwith %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        🕒 Submitted at: {{ group.timestamp|date:"d/m/Y H:i" }}
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0 table-bordered table-striped">
+          <thead class="table-light text-center">
+            <tr>
+              <th>Product</th>
+              <th>Ordered Quantity</th>
+              <th>Admin Processed?</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for product in products %}
+              {% with entry=group.entries|dict_key:product.id %}
+              <tr>
+                <td>{{ product.name }}</td>
+                <td>
+                  {% if entry %}
+                    <span class="badge bg-success">{{ entry.order_quantity }}</span>
+                  {% else %}
+                    <span class="text-muted">–</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if entry %}
+                    {% if entry.is_processed %}
+                      <span class="badge bg-success">✅ Yes</span>
+                    {% else %}
+                      <span class="badge bg-secondary">❌ No</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="text-muted">–</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   {% endfor %}
 {% else %}
-  <p class="text-muted">You haven't placed any orders yet.</p>
+  <div class="alert alert-info">You haven't placed any orders yet.</div>
 {% endif %}
 {% endblock %}

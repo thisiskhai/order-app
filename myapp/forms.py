@@ -1,29 +1,45 @@
 from django import forms
-from .models import Product, OrderEntry
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
-# ✅ Full form for admin (superuser)
+from .models import Product, OrderEntry, Category
+
+# ✅ Form quản lý sản phẩm cho admin
 class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'unit']  # ❌ 'order_quantity' is excluded
+        fields = ['name', 'unit', 'category']
+        labels = {
+            'name': 'Product Name',
+            'unit': 'Unit',
+            'category': 'Category',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'unit': forms.Select(attrs={'class': 'form-select'}),      # ✅ Dropdown
+            'category': forms.Select(attrs={'class': 'form-select'}),
+        }
 
-# ✅ Quantity input form for staff only
+# ✅ Form đặt hàng cho nhân viên
 class ProductStaffForm(forms.ModelForm):
     order_quantity = forms.IntegerField(min_value=1, required=True)
 
     class Meta:
-        model = OrderEntry  # ✅ Use `OrderEntry` instead of `Product`
+        model = OrderEntry
         fields = ['order_quantity']
 
+# ✅ Form đăng nhập cho staff (có Bootstrap)
 class StaffLoginForm(AuthenticationForm):
-    username = forms.CharField(label="Username", widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(
+        label="Username",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
 
-from django import forms
-from django.contrib.auth.models import User
-
+# ✅ Form tạo nhân viên mới (admin)
 class StaffCreateForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
@@ -37,7 +53,7 @@ class StaffCreateForm(forms.ModelForm):
             'username': 'Username',
         }
         help_texts = {
-            'username': '',  # Remove default Django help text
+            'username': '',  # ✅ Xoá hint mặc định của Django
         }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -51,8 +67,6 @@ class StaffCreateForm(forms.ModelForm):
             user.save()
         return user
 
-
+# ✅ Form upload file Excel
 class ProductImportForm(forms.Form):
     excel_file = forms.FileField(label='Choose Excel file (.xlsx)')
-
-

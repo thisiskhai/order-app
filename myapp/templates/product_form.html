@@ -1,29 +1,40 @@
 {% extends "base.html" %}
-
 {% block title %}{{ product.name|default:"Add New Product" }}{% endblock %}
 
 {% block content %}
-<div class="card mt-4">
+<div class="container mt-4">
+  <div class="card">
     <div class="card-body">
-        <h4 class="card-title">
-            {% if product %}
-                ✏️ Edit Product: {{ product.name }}
-            {% else %}
-                ➕ Add New Product
-            {% endif %}
-        </h4>
+      <h4 class="card-title mb-4">
+        {% if product %}
+          Edit Product: <strong>{{ product.name }}</strong>
+        {% else %}
+          Add New Product
+        {% endif %}
+      </h4>
 
-        <form method="post" action="">
-            {% csrf_token %}
-            <div class="mb-3">
-                {{ form.as_p }}
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          {% for field in form %}
+            <div class="col-md-6">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small">{{ field.errors.0 }}</div>
+              {% endif %}
             </div>
+          {% endfor %}
+        </div>
 
-            <button class="btn btn-success" type="submit">
-                {% if product %} Update {% else %} Add {% endif %}
-            </button>
-            <a href="{% url 'all_products' %}" class="btn btn-secondary ms-2">Cancel</a>
-        </form>
+        <div class="mt-4">
+          <button type="submit" class="btn btn-success">
+            {% if product %}Update{% else %}Add{% endif %}
+          </button>
+          <a href="{% url 'all_products' %}" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 {% endblock %}

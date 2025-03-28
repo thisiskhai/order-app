@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+# ✅ Model phân loại sản phẩm
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 
 # ✅ Model sản phẩm
 class Product(models.Model):
@@ -16,6 +23,9 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # ✅ ForeignKey tới Category
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)  
+
     def __str__(self):
         return self.name
 
@@ -28,5 +38,6 @@ class OrderEntry(models.Model):
     created_at = models.DateTimeField()
     is_processed = models.BooleanField(default=False)
     is_seen = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.staff.username} đặt {self.order_quantity} x {self.product.name}"

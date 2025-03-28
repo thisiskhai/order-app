@@ -1,11 +1,12 @@
 <form method="post">
   {% csrf_token %}
+  
   <table class="table table-bordered mt-3">
     <thead class="table-dark">
       <tr>
         <th>Product</th>
         <th>Quantity</th>
-        <th>Processed?</th>
+        <th>Processed</th>
       </tr>
     </thead>
     <tbody>
@@ -14,13 +15,22 @@
         <td>{{ entry.product.name }}</td>
         <td>{{ entry.order_quantity }}</td>
         <td>
-          <input type="checkbox" name="processed_{{ entry.id }}" {% if entry.is_processed %}checked{% endif %}>
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              name="processed_{{ entry.id }}"
+              {% if entry.is_processed %}checked{% endif %}
+            >
+          </div>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <button type="submit" class="btn btn-primary mt-2">💾 Save Product Status</button>
-  <a href="{% url 'admin_order_batches' staff.id %}" class="btn btn-secondary mb-4">← Back to Order List</a>
+  <div class="mt-3 d-flex justify-content-between">
+    <button type="submit" class="btn btn-primary">Save Product Status</button>
+    <a href="{% url 'admin_order_batches' staff.id %}" class="btn btn-secondary">Back to Order List</a>
+  </div>
 </form>

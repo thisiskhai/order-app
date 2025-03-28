@@ -1,53 +1,51 @@
 {% extends "base.html" %}
 {% load custom_filters %}
+
 {% block title %}Orders of {{ staff.username }}{% endblock %}
 
 {% block content %}
-<h2>📦 Orders by: <strong>{{ staff.username }}</strong></h2>
-<p>
-    <a class="btn btn-secondary mb-4" href="{% url 'admin_dashboard' %}">
-        ← Back to Dashboard
-    </a>
-</p>
+<h2 class="mb-4">📦 Orders by: <strong>{{ staff.username }}</strong></h2>
+
+<a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-4">← Back to Dashboard</a>
 
 {% if grouped_orders %}
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>🕒 Submitted At</th>
-                <th>🔢 Number of Products</th>
-                <th>📦 Total Quantity</th>
-                <th>👁️ Status</th>
-                <th>📋 View Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for group in grouped_orders %}
-            <tr>
-                <td>{{ group.timestamp|date:"d/m/Y H:i" }}</td>
-                <td>{{ group.entries|length }}</td>
-                <td>
-                    {% with total=group.entries|sum_attr:"order_quantity" %}
-                        {{ total }}
-                    {% endwith %}
-                </td>
-                <td>
-                    {% if group.entries.0.is_seen %}
-                        <span class="badge bg-success">✅ Seen</span>
-                    {% else %}
-                        <span class="badge bg-secondary">❌ Unseen</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'admin_batch_detail' staff.id group.timestamp|date:'YmdHi' %}" class="btn btn-sm btn-primary">
-                        Details
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-dark text-center align-middle">
+      <tr>
+        <th>🕒 Submitted At</th>
+        <th>🔢 Number of Products</th>
+        <th>📦 Total Quantity</th>
+        <th>👁️ Status</th>
+        <th>📋 View Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in grouped_orders %}
+      <tr class="align-middle text-center">
+        <td>{{ group.timestamp|date:"d/m/Y H:i" }}</td>
+        <td>{{ group.entries|length }}</td>
+        <td>
+          {% with total=group.entries|sum_attr:"order_quantity" %}
+            {{ total }}
+          {% endwith %}
+        </td>
+        <td>
+          {% if group.entries.0.is_seen %}
+            <span class="badge bg-success">✅ Seen</span>
+          {% else %}
+            <span class="badge bg-secondary">❌ Unseen</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'admin_batch_detail' staff.id group.timestamp|date:'YmdHi' %}" class="btn btn-sm btn-primary">
+            Details
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% else %}
-    <div class="alert alert-info">No orders available.</div>
+  <div class="alert alert-info">No orders available for this staff member.</div>
 {% endif %}
 {% endblock %}
