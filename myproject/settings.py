@@ -65,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # thêm vào đây
+        'whitenoise.middleware.WhiteNoiseMiddleware',
+
 
 ]
 
