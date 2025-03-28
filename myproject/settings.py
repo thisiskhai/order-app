@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#!m&0px-$+&20ap@j*uth30$u_yck(=2gy2cq70w=il8xx4%za
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['order-app.herokuapp.com']
 
 
 LANGUAGE_CODE = 'vi'  # mặc định là Tiếng Việt
